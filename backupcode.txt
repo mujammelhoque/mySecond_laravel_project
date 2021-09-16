@@ -1,0 +1,11 @@
+Route::get('best', function () {
+    $products = Product::query()
+        ->join('order_items', 'order_items.productId', '=', 'products.id')
+        ->selectRaw('products.*, SUM(order_items.quantity) AS quantity_sold')
+        ->groupBy(['products.id']) // should group by primary key
+        ->orderByDesc('quantity_sold')
+        ->take(20) // 20 best-selling products
+        ->get();
+
+    return $products;
+});
